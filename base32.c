@@ -40,7 +40,7 @@ static int le_base32;
  * Every user visible function must have an entry in base32_functions[].
  */
 const zend_function_entry base32_functions[] = {
-	PHP_FE(confirm_base32_compiled,	NULL)		/* For testing, remove later. */
+//	PHP_FE(confirm_base32_compiled,	NULL)		/* For testing, remove later. */
 	PHP_FE(base32_encode, NULL)
 	PHP_FE(base32_decode, NULL)
 	PHP_FE_END	/* Must be the last line in base32_functions[] */
@@ -248,7 +248,11 @@ PHP_FUNCTION(base32_encode)
 	}
 	result = php_base32_encode((uint8_t*)str, str_len, &ret_length);
 	if (result != NULL) {
+#if PHP_VERSION_ID > 70000
+		RETVAL_STRINGL((char*)result, ret_length);
+#else
 		RETVAL_STRINGL((char*)result, ret_length, 0);
+#endif
 	} else {
 		RETURN_FALSE;
 	}
@@ -268,7 +272,11 @@ PHP_FUNCTION(base32_decode)
 	}
 	result = php_base32_decode((uint8_t*)str, str_len, &ret_length);
 	if (result != NULL) {
+#if PHP_VERSION_ID > 70000
+		RETVAL_STRINGL((char*)result, ret_length);
+#else
 		RETVAL_STRINGL((char*)result, ret_length, 0);
+#endif
 	} else {
 		RETURN_FALSE;
 	}
@@ -281,6 +289,7 @@ PHP_FUNCTION(base32_decode)
 /* Every user-visible function in PHP should document itself in the source */
 /* {{{ proto string confirm_base32_compiled(string arg)
    Return a string to confirm that the module is compiled in */
+/*
 PHP_FUNCTION(confirm_base32_compiled)
 {
 	char *arg = NULL;
@@ -294,6 +303,7 @@ PHP_FUNCTION(confirm_base32_compiled)
 	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "base32", arg);
 	RETURN_STRINGL(strg, len, 0);
 }
+*/
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and 
    unfold functions in source code. See the corresponding marks just before 
